@@ -1,0 +1,4 @@
+1. f(x) = A*(x*x) + B*x + C
+2. f(x) = A * sin(x) + B * cos( C*x )
+3. f(x) = A*log( B*x )
+4. f(x) = A / ( sin(x*x) * B )
