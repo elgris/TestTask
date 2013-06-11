@@ -1,4 +1,4 @@
-#include "plotcontrolwidget.h"
+#include "PlotControlWidget.h"
 #include "ui_plotcontrolwidget.h"
 
 PlotControlWidget::PlotControlWidget(QWidget *parent) :

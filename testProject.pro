@@ -14,26 +14,29 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    Widgets/plotparameterswidget.cpp \
-    Widgets/plotcontrolwidget.cpp \
     Models/Function.cpp \
     Models/Quadratic.cpp \
     Models/Trigonometric.cpp \
     Models/Logarithmic.cpp \
-    Models/Inverse.cpp
+    Models/Inverse.cpp \
+    Widgets/PlotParametersWidget.cpp \
+    Widgets/PlotControlWidget.cpp \
+    Widgets/PlotWidget.cpp
 
 HEADERS  += mainwindow.h \
-    Widgets/plotparameterswidget.h \
-    Widgets/plotcontrolwidget.h \
     Models/Function.h \
     Models/Quadratic.h \
     Models/Trigonometric.h \
     Models/Logarithmic.h \
-    Models/Inverse.h
+    Models/Inverse.h \
+    Widgets/PlotParametersWidget.h \
+    Widgets/PlotControlWidget.h \
+    Widgets/PlotWidget.h
 
 FORMS    += mainwindow.ui \
-    Widgets/plotparameterswidget.ui \
-    Widgets/plotcontrolwidget.ui
+    Widgets/PlotParametersWidget.ui \
+    Widgets/PlotControlWidget.ui \
+    Widgets/PlotWidget.ui
 
 OTHER_FILES += \
     README.txt \

@@ -10,6 +10,18 @@
     <height>165</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>267</width>
+    <height>165</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>267</width>
+    <height>165</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -19,34 +31,14 @@
      <item>
       <widget class="QComboBox" name="comboBox">
        <property name="currentIndex">
-        <number>0</number>
+        <number>-1</number>
        </property>
-       <item>
-        <property name="text">
-         <string>f(x) = A*(x*x) + B*x + C</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>f(x) = A * sin(x) + B * cos( C*x )</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>f(x) = A*log( B*x )</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>f(x) = A / ( sin(x*x) * B )</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <layout class="QVBoxLayout" name="plotParametersLayout" stretch="">
+        <layout class="QVBoxLayout" name="plotParametersLayout">
          <property name="sizeConstraint">
           <enum>QLayout::SetMaximumSize</enum>
          </property>

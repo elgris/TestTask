@@ -1,4 +1,4 @@
-#include "plotparameterswidget.h"
+#include "PlotParametersWidget.h"
 #include "ui_plotparameterswidget.h"
 
 PlotParametersWidget::PlotParametersWidget(QWidget *parent) :

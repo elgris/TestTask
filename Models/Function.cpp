@@ -13,7 +13,3 @@ void Function::setParameter(int parameterNumber, double value) {
 
     this->_parameters[parameterNumber] = value;
 }
-
-QString Function::getFunctionString() {
-    return this->_functionString;
-}
