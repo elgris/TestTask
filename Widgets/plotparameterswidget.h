@@ -12,11 +12,17 @@ class PlotParametersWidget : public QWidget
     Q_OBJECT
     
 public:
-    explicit PlotParametersWidget(QWidget *parent = 0);
+    explicit PlotParametersWidget(int parametersNumber, QWidget *parent = 0);
     ~PlotParametersWidget();
     
 private:
     Ui::PlotParametersWidget *ui;
+    int _parametersNumber;
+
+    /**
+     * @brief Draws number of inputs with labels
+     */
+    void setupParameterInputs();
 };
 
 #endif // PLOTPARAMETERSWIDGET_H
