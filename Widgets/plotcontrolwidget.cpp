@@ -5,6 +5,7 @@
 #include "Models/Inverse.h"
 #include "Models/Quadratic.h"
 #include "Models/Trigonometric.h"
+#include "PlotParametersWidget.h"
 
 PlotControlWidget::PlotControlWidget(QWidget *parent) :
     QWidget(parent),
@@ -23,7 +24,18 @@ PlotControlWidget::~PlotControlWidget()
 }
 
 void PlotControlWidget::functionSelectionChanged(int index) {
-
+    while (QLayoutItem* item = ui->plotParametersLayout->takeAt(0))
+    {
+        if (QWidget* widget = item->widget())
+            delete widget;
+        delete item;
+    }
+    ui->plotParametersLayout->addWidget(
+                new PlotParametersWidget(
+                    _functions->at(index)->getParameters().size(),
+                    this
+                    )
+                );
 }
 
 void PlotControlWidget::loadFunctions()
@@ -40,6 +52,7 @@ void PlotControlWidget::addFunctionsToCombobox()
 {
     for(int i = 0; i < _functions->size(); ++i) {
         ui->comboBox->addItem(_functions->at(i)->getFunctionString());
+
     }
 }
 

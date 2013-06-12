@@ -3,6 +3,7 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include <QSpacerItem>
 
 PlotParametersWidget::PlotParametersWidget(int parametersNumber, QWidget *parent) :
     QWidget(parent),
@@ -11,6 +12,7 @@ PlotParametersWidget::PlotParametersWidget(int parametersNumber, QWidget *parent
 {
     ui->setupUi(this);
     setupParameterInputs();
+    ui->verticalLayout->addSpacerItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
 }
 
 PlotParametersWidget::~PlotParametersWidget()
@@ -23,12 +25,12 @@ void PlotParametersWidget::setupParameterInputs() {
         QLabel * label = new QLabel(this);
         label->setText(QChar('A' + i));
         label->setLayoutDirection(Qt::LeftToRight);
-        ui->formLayout->setWidget(0, QFormLayout::LabelRole, label);
+        ui->formLayout->setWidget(i, QFormLayout::LabelRole, label);
 
         QDoubleSpinBox * input = new QDoubleSpinBox(this);
         input->setMinimum(-100);
         input->setMaximum(100);
         input->setSingleStep(0.1);
-        ui->formLayout->setWidget(0, QFormLayout::FieldRole, input);
+        ui->formLayout->setWidget(i, QFormLayout::FieldRole, input);
     }
 }
