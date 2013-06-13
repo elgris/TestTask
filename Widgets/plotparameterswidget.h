@@ -2,6 +2,7 @@
 #define PLOTPARAMETERSWIDGET_H
 
 #include <QWidget>
+#include <QVector>
 
 namespace Ui {
 class PlotParametersWidget;
@@ -14,6 +15,8 @@ class PlotParametersWidget : public QWidget
 public:
     explicit PlotParametersWidget(int parametersNumber, QWidget *parent = 0);
     ~PlotParametersWidget();
+
+    QVector<double> getPlotParameters();
     
 private:
     Ui::PlotParametersWidget *ui;

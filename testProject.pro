@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     Models/Inverse.cpp \
     Widgets/PlotParametersWidget.cpp \
     Widgets/PlotControlWidget.cpp \
-    Widgets/PlotWidget.cpp
+    Widgets/PlotWidget.cpp \
+    Widgets/ViewItems/PlotItem.cpp
 
 HEADERS  += mainwindow.h \
     Models/Function.h \
@@ -31,7 +32,8 @@ HEADERS  += mainwindow.h \
     Models/Inverse.h \
     Widgets/PlotParametersWidget.h \
     Widgets/PlotControlWidget.h \
-    Widgets/PlotWidget.h
+    Widgets/PlotWidget.h \
+    Widgets/ViewItems/PlotItem.h
 
 FORMS    += mainwindow.ui \
     Widgets/PlotParametersWidget.ui \

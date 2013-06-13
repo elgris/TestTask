@@ -20,7 +20,20 @@ PlotParametersWidget::~PlotParametersWidget()
     delete ui;
 }
 
-void PlotParametersWidget::setupParameterInputs() {
+QVector<double> PlotParametersWidget::getPlotParameters()
+{
+    QVector<double> params;
+
+    for(int i = 0; i < ui->formLayout->rowCount(); ++i) {
+        QDoubleSpinBox * input = (QDoubleSpinBox *)(ui->formLayout->itemAt(i, QFormLayout::FieldRole)->widget());
+        params.append(input->value());
+    }
+
+    return params;
+}
+
+void PlotParametersWidget::setupParameterInputs()
+{
     for(int i = 0; i < _parametersNumber; ++i) {
         QLabel * label = new QLabel(this);
         label->setText(QChar('A' + i));

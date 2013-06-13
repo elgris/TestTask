@@ -42,6 +42,12 @@ public:
      */
     void setParameter(int parameterNumber, double value);
 
+    /**
+     * @brief Set function's parameters at once
+     * @param parameters
+     */
+    void setParameters(const QVector<double> & parameters);
+
 protected:
     QVector<double> _parameters;
     QString _functionString;

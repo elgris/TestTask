@@ -1,10 +1,6 @@
 #include "PlotControlWidget.h"
 #include "ui_plotcontrolwidget.h"
 
-#include "Models/Logarithmic.h"
-#include "Models/Inverse.h"
-#include "Models/Quadratic.h"
-#include "Models/Trigonometric.h"
 #include "PlotParametersWidget.h"
 
 PlotControlWidget::PlotControlWidget(QWidget *parent) :
@@ -12,9 +8,15 @@ PlotControlWidget::PlotControlWidget(QWidget *parent) :
     ui(new Ui::PlotControlWidget)
 {
     ui->setupUi(this);
-    _functions = new QVector<Function *>();
+}
 
-    loadFunctions();
+PlotControlWidget::PlotControlWidget(QWidget *parent, QVector<Function *> * functions) :
+    QWidget(parent),
+    ui(new Ui::PlotControlWidget),
+    _currentParametersWidget(NULL)
+{
+    ui->setupUi(this);
+    setFunctions(functions);
 }
 
 PlotControlWidget::~PlotControlWidget()
@@ -23,36 +25,62 @@ PlotControlWidget::~PlotControlWidget()
     delete _functions;
 }
 
-void PlotControlWidget::functionSelectionChanged(int index) {
-    while (QLayoutItem* item = ui->plotParametersLayout->takeAt(0))
-    {
-        if (QWidget* widget = item->widget())
-            delete widget;
-        delete item;
-    }
-    ui->plotParametersLayout->addWidget(
-                new PlotParametersWidget(
-                    _functions->at(index)->getParameters().size(),
-                    this
-                    )
-                );
-}
-
-void PlotControlWidget::loadFunctions()
+void PlotControlWidget::setFunctions(QVector<Function *> * functions)
 {
-    _functions->append(new Quadratic());
-    _functions->append(new Trigonometric());
-    _functions->append(new Logarithmic());
-    _functions->append(new Inverse());
+    _functions = functions;
 
-    addFunctionsToCombobox();
-}
+    ui->comboBox->clear();
 
-void PlotControlWidget::addFunctionsToCombobox()
-{
     for(int i = 0; i < _functions->size(); ++i) {
         ui->comboBox->addItem(_functions->at(i)->getFunctionString());
-
     }
 }
 
+QVector<double> PlotControlWidget::getFunctionParameters()
+{
+    if(_currentParametersWidget != NULL) {
+        return _currentParametersWidget->getPlotParameters();
+    }
+
+    return QVector<double>();
+}
+
+Function * PlotControlWidget::getSelectedFunction()
+{
+    int selectedFuncIndex = ui->comboBox->currentIndex();
+
+    if(selectedFuncIndex >= _functions->size() || selectedFuncIndex < 0) {
+        return NULL;
+    }
+
+    return _functions->at(selectedFuncIndex);
+}
+
+double PlotControlWidget::getValueFrom() const
+{
+    return ui->valueFrom->value();
+}
+
+double PlotControlWidget::getValueTo() const
+{
+    return ui->valueTo->value();
+}
+
+double PlotControlWidget::getValueStep() const
+{
+    return ui->valueStep->value();
+}
+
+void PlotControlWidget::functionSelectionChanged(int index)
+{
+    if(_currentParametersWidget != NULL) {
+        ui->plotParametersLayout->removeWidget(_currentParametersWidget);
+        delete _currentParametersWidget;
+    }
+
+    _currentParametersWidget = new PlotParametersWidget(
+        _functions->at(index)->getParameters().size(),
+        this);
+
+    ui->plotParametersLayout->addWidget(_currentParametersWidget);
+}

@@ -1,15 +1,24 @@
 #include "Function.h"
 #include <stdexcept>
 
-Function::Function(int parametersCount, QString functionString) {
-    this->_parameters.fill(0, parametersCount);
-    this->_functionString = functionString;
+Function::Function(int parametersCount, QString functionString)
+{
+    _parameters.fill(0, parametersCount);
+    _functionString = functionString;
 }
 
-void Function::setParameter(int parameterNumber, double value) {
-    if(parameterNumber > this->_parameters.size() || parameterNumber < 0) {
+void Function::setParameter(int parameterNumber, double value)
+{
+    if(parameterNumber > _parameters.size() || parameterNumber < 0) {
         throw new std::out_of_range("Invalid parameter number");
     }
 
-    this->_parameters[parameterNumber] = value;
+    _parameters[parameterNumber] = value;
+}
+
+void Function::setParameters(const QVector<double> & parameters)
+{
+    for(int i = 0; i < _parameters.size(); ++i) {
+        setParameter(i, parameters[i]);
+    }
 }
