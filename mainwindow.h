@@ -10,6 +10,7 @@ class MainWindow;
 class PlotControlWidget;
 class PlotWidget;
 class Function;
+class PlotBuilder;
 
 class MainWindow : public QMainWindow
 {
@@ -19,15 +20,29 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void startProcessing();
+    void pauseProcessing();
+    void resumeProcessing();
+    void stopProcessing();
+
 public slots:
     void startClicked();
     void stopClicked();
     void pauseClicked();
+    void valueProcessed(double, double, double);
+    void processingFinished();
 
 private:
     Ui::MainWindow *ui;
     PlotControlWidget *_plotControlWidget;
     PlotWidget * _plotWidget;
+    PlotBuilder *_plotBuilder;
+
+    /**
+     * @brief Sets up Plot builder and all signal-slot connections
+     */
+    void setupPlotBuilder();
 
     /**
      * @brief Loads available functions

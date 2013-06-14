@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     Widgets/PlotParametersWidget.cpp \
     Widgets/PlotControlWidget.cpp \
     Widgets/PlotWidget.cpp \
-    Widgets/ViewItems/PlotItem.cpp
+    Widgets/ViewItems/PlotItem.cpp \
+    Models/PlotBuilder.cpp
 
 HEADERS  += mainwindow.h \
     Models/Function.h \
@@ -33,7 +34,8 @@ HEADERS  += mainwindow.h \
     Widgets/PlotParametersWidget.h \
     Widgets/PlotControlWidget.h \
     Widgets/PlotWidget.h \
-    Widgets/ViewItems/PlotItem.h
+    Widgets/ViewItems/PlotItem.h \
+    Models/PlotBuilder.h
 
 FORMS    += mainwindow.ui \
     Widgets/PlotParametersWidget.ui \

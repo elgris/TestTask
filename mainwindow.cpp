@@ -6,11 +6,14 @@
 #include "Models/Inverse.h"
 #include "Models/Quadratic.h"
 #include "Models/Trigonometric.h"
+#include "Models/PlotBuilder.h"
 #include <QSpacerItem>
+#include <QThread>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    _plotBuilder(new PlotBuilder)
 {
     ui->setupUi(this);
     _plotControlWidget = new PlotControlWidget(this, loadFunctions());
@@ -19,11 +22,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->verticalLayout->insertWidget(0, _plotControlWidget);
     ui->verticalLayout->addSpacerItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
     ui->horizontalLayout->addWidget(_plotWidget);
+
+    setupPlotBuilder();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+
+    _plotBuilder->stop();
+    delete _plotBuilder;
 }
 
 void MainWindow::startClicked()
@@ -47,12 +55,29 @@ void MainWindow::startClicked()
     double from = _plotControlWidget->getValueFrom();
     double to = _plotControlWidget->getValueTo();
 
+    _plotBuilder->setValueFrom(from);
+    _plotBuilder->setValueTo(to);
+    _plotBuilder->setStep(step);
+    _plotBuilder->setFunction(function);
+    _plotWidget->resetPlot();
 
-    for(double x = from; x < to; x += step) {
-        double y = function->calculate(x);
+    emit startProcessing();
+}
 
-        _plotWidget->addPoint(x, y);
-    }
+void MainWindow::setupPlotBuilder()
+{
+    QThread* thread = new QThread;
+    _plotBuilder->moveToThread(thread);
+
+    connect(this, SIGNAL(startProcessing()), _plotBuilder, SLOT(start()));
+    connect(this, SIGNAL(stopProcessing()), _plotBuilder, SLOT(stop()));
+    connect(this, SIGNAL(pauseProcessing()), _plotBuilder, SLOT(pause()));
+    connect(this, SIGNAL(resumeProcessing()), _plotBuilder, SLOT(resume()));
+
+    connect(_plotBuilder, SIGNAL(finished()), this, SLOT(processingFinished()));
+    connect(_plotBuilder, SIGNAL(processed(double, double, double)), this, SLOT(valueProcessed(double, double, double)));
+
+    thread->start();
 }
 
 void MainWindow::stopClicked()
@@ -63,6 +88,15 @@ void MainWindow::stopClicked()
 void MainWindow::pauseClicked()
 {
 
+}
+
+void MainWindow::valueProcessed(double x, double y, double progress)
+{
+    _plotWidget->addPoint(x, y);
+}
+
+void  MainWindow::processingFinished()
+{
 }
 
 QVector<Function *> * MainWindow::loadFunctions()

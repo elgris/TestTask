@@ -10,12 +10,9 @@ PlotWidget::PlotWidget(QWidget *parent) :
     ui->setupUi(this);
     QGraphicsScene *scene = new QGraphicsScene(this);
 
-    _plotItem = new PlotItem();
     ui->graphicsView->setScene(scene);
-    scene->addItem(_plotItem);
 
-    drawAxis();
-    updateSceneScale();
+    resetPlot();
 }
 
 PlotWidget::~PlotWidget()
@@ -25,8 +22,39 @@ PlotWidget::~PlotWidget()
 
 void PlotWidget::addPoint(double x, double y)
 {
-    _plotItem->addPoint(x, y);
-    update();
+//    _plotItem->addPoint(x, y);
+
+    _plotItem->addPoint(
+        normalizeXValue(x),
+        normalizeYValue(y)
+    );
+
+    ui->graphicsView->update();
+    ui->graphicsView->repaint();
+    ui->graphicsView->invalidateScene(_plotItem->boundingRect());
+}
+
+void PlotWidget::resetPlot()
+{
+    QGraphicsScene * scene = ui->graphicsView->scene();
+    scene->clear();
+
+    _minX = 0;
+    _minY = 0;
+    _initialWidth = this->width();
+    _initialHeight = this->height();
+    _maxX = _initialWidth;
+    _maxY = _initialHeight;
+
+    int axisXVerticalPos = _maxY / 2;
+    scene->addLine(QLineF(0, axisXVerticalPos, _maxX, axisXVerticalPos));
+
+    int axisYHorizontalPos = _maxX / 2;
+    scene->addLine(QLineF(axisYHorizontalPos, 0, axisYHorizontalPos, _maxY));
+
+    _plotItem = new PlotItem();
+    scene->addItem(_plotItem);
+    updateSceneScale();
 }
 
 void PlotWidget::resizeEvent(QResizeEvent * event)
@@ -36,19 +64,30 @@ void PlotWidget::resizeEvent(QResizeEvent * event)
     QWidget::resizeEvent(event);
 }
 
-void PlotWidget::drawAxis()
-{
-    QGraphicsScene * scene = ui->graphicsView->scene();
-
-    int axisXVerticalPos = this->height() >> 1;
-    scene->addLine(QLineF(0, axisXVerticalPos, this->width(), axisXVerticalPos));
-
-    int axisYHorizontalPos = this->width() >> 1;
-    scene->addLine(QLineF(axisYHorizontalPos, 0, axisYHorizontalPos, this->height()));
-}
-
 void PlotWidget::updateSceneScale()
 {
     QGraphicsScene * scene = ui->graphicsView->scene();
     ui->graphicsView->fitInView(scene->sceneRect());
+}
+
+double PlotWidget::normalizeXValue(double value)
+{
+    if(_initialWidth > 0) {
+        double valuePerUnit = (_maxX - _minX) / _initialWidth;
+        value *= valuePerUnit;
+        value += _initialWidth >> 1; // move coord to center of the plot
+    }
+
+    return value;
+}
+
+double PlotWidget::normalizeYValue(double value)
+{
+    if(_initialHeight > 0) {
+        double valuePerUnit = (_maxY - _minY) / _initialHeight;
+        value *= -valuePerUnit; // make OY coord "Cortesian"-like
+        value += _initialHeight >> 1; // move coord to center of the plot
+    }
+
+    return value;
 }

@@ -5,6 +5,12 @@ PlotItem::PlotItem()
 {
 }
 
+void PlotItem::clearPoints()
+{
+    _points.clear();
+    _boundingRect.setCoords(0, 0, 0, 0);
+}
+
 void PlotItem::addPoint(double x, double y)
 {
     double rectXMin = _boundingRect.x();
@@ -23,7 +29,7 @@ void PlotItem::addPoint(double x, double y)
     if(y > rectYMax) {
         _boundingRect.setHeight(y - rectYMin);
     }
-    _points.append(QPointF(x, y));
+    _points.push_back(QPointF(x, y));
 }
 
 void PlotItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
