@@ -58,25 +58,42 @@ void MainWindow::setupConnections()
 
 void MainWindow::startClicked()
 {
-    try {
-        Function * function = _plotControlWidget->getSelectedFunction();
-        function->setParameters(_plotControlWidget->getFunctionParameters());
-
-        double from = _plotControlWidget->getValueFrom();
-        double to = _plotControlWidget->getValueTo();
-        double step = _plotControlWidget->getValueStep();
-
-        _plotBuilder->setRange(from, to);
-        _plotBuilder->setStep(step);
-        _plotBuilder->setFunction(function);
-
-        _plotControlWidget->setEnabled(false);
-        ui->startButton->setEnabled(true);
-
-        emit startProcessing();
-    } catch (std::runtime_error &e) {
-        QMessageBox::warning(this, "Warning!", e.what());
+    Function * function = _plotControlWidget->getSelectedFunction();
+    if(function == NULL) {
+        QMessageBox::warning(this, "Warning!", "Function is not defined");
+        return;
     }
+
+    QVector<double> params = _plotControlWidget->getFunctionParameters();
+    if(params.size() != function->getParameters().size()) {
+        QMessageBox::warning(this, "Warning!", "Unsupported number of function prameters provided");
+        return;
+    }
+
+    double step = _plotControlWidget->getValueStep();
+    if(step == 0) {
+        QMessageBox::warning(this, "Warning!", "Step value must be greater than zero");
+        return;
+    }
+
+
+    double from = _plotControlWidget->getValueFrom();
+    double to = _plotControlWidget->getValueTo();
+    if(from > to) {
+        QMessageBox::warning(this, "Warning!", "End value must be greater than start value");
+        return;
+    }
+
+    function->setParameters(params);
+
+    _plotBuilder->setRange(from, to);
+    _plotBuilder->setStep(step);
+    _plotBuilder->setFunction(function);
+
+    _plotControlWidget->setEnabled(false);
+    ui->startButton->setEnabled(true);
+
+    emit startProcessing();
 }
 
 void MainWindow::pauseClicked()

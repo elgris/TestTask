@@ -52,12 +52,8 @@ Function * PlotControlWidget::getSelectedFunction()
 
     Function * function = NULL;
 
-    if(selectedFuncIndex < _functions->size() && selectedFuncIndex > 0) {
+    if(selectedFuncIndex < _functions->size() && selectedFuncIndex >= 0) {
         function = _functions->at(selectedFuncIndex);
-    }
-
-    if(function == NULL) {
-        throw new std::runtime_error("Function is not defined");
     }
 
     return function;
