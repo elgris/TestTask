@@ -2,8 +2,11 @@
 #define PLOTBUILDER_H
 
 #include <QObject>
+#include "PlotBuilderWorker.h"
+
 class Function;
 class PlotWidget;
+
 /**
  * @brief The class is responsible for building plots
  * Supposed to be used in separate thread
@@ -13,16 +16,20 @@ class PlotBuilder : public QObject
     Q_OBJECT
 public:
     explicit PlotBuilder(QObject *parent = 0);
+    ~PlotBuilder();
     
-    void setValueFrom(double valueFrom) { _valueFrom = valueFrom; }
-    void setValueTo(double valueTo) { _valueTo = valueTo; }
-    void setStep(double step) { _step = step; }
+    void setValueFrom(double valueFrom) { _worker->setValueFrom(valueFrom); }
+    void setValueTo(double valueTo) { _worker->setValueTo((valueTo)); }
+    void setStep(double step) { _worker->setStep(step); }
 
-    void setFunction(Function *function) { _function = function; }
+    void setFunction(Function *function) { _worker->setFunction(function); }
+    bool isProcessing() { return _isProcessing; }
 
 signals:
+    void started();
     void finished();
     void paused();
+    void resumed();
     void processed(double, double, double);
 
 public slots:
@@ -31,29 +38,9 @@ public slots:
     void resume();
     void stop();
 
-    
 private:
-    double _valueFrom;
-    double _valueTo;
-    double _valueCurrent;
-    double _step;
-
     bool _isProcessing;
-
-    Function *_function;
-
-    /**
-     * @brief Perform calculations
-     */
-    void process();
-
-    /**
-     * @brief Calculate current builder's progress.
-     * Returns value in range [0, 1]
-     */
-    double getProgress();
-
-    void msleep(unsigned long msecs);
+    PlotBuilderWorker * _worker;
 };
 
 #endif // PLOTBUILDER_H

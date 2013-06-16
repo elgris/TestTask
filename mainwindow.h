@@ -28,7 +28,6 @@ signals:
 
 public slots:
     void startClicked();
-    void stopClicked();
     void pauseClicked();
     void valueProcessed(double, double, double);
     void processingFinished();
@@ -38,6 +37,11 @@ private:
     PlotControlWidget *_plotControlWidget;
     PlotWidget * _plotWidget;
     PlotBuilder *_plotBuilder;
+
+    static const QString LABEL_PAUSE;
+    static const QString LABEL_START;
+    static const QString LABEL_CONTINUE;
+    static const QString LABEL_PROCESSING;
 
     /**
      * @brief Sets up Plot builder and all signal-slot connections

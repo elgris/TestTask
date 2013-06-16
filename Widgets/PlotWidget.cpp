@@ -22,16 +22,18 @@ PlotWidget::~PlotWidget()
 
 void PlotWidget::addPoint(double x, double y)
 {
-//    _plotItem->addPoint(x, y);
+    y = -y;
+    if(_maxY < y) {
+        _maxY = y;
+    }
+    if(_minY > y) {
+        _minY = y;
+    }
 
-    _plotItem->addPoint(
-        normalizeXValue(x),
-        normalizeYValue(y)
-    );
+    _plotItem->addPoint(x, y);
+    updateSceneRect();
+    updateSceneScale();
 
-    ui->graphicsView->update();
-    ui->graphicsView->repaint();
-    ui->graphicsView->invalidateScene(_plotItem->boundingRect());
 }
 
 void PlotWidget::resetPlot()
@@ -39,22 +41,40 @@ void PlotWidget::resetPlot()
     QGraphicsScene * scene = ui->graphicsView->scene();
     scene->clear();
 
-    _minX = 0;
     _minY = 0;
-    _initialWidth = this->width();
-    _initialHeight = this->height();
-    _maxX = _initialWidth;
-    _maxY = _initialHeight;
+    _maxY = 0;
 
-    int axisXVerticalPos = _maxY / 2;
-    scene->addLine(QLineF(0, axisXVerticalPos, _maxX, axisXVerticalPos));
+    updateSceneRect();
 
-    int axisYHorizontalPos = _maxX / 2;
-    scene->addLine(QLineF(axisYHorizontalPos, 0, axisYHorizontalPos, _maxY));
+
+//    int axisXVerticalPos = _maxY / 2;
+//    scene->addLine(QLineF(_minX, 0, _maxX, 0));
+
+//    int axisYHorizontalPos = _maxX / 2;
+//    scene->addLine(QLineF(0, 0, 0, _maxY));
 
     _plotItem = new PlotItem();
     scene->addItem(_plotItem);
     updateSceneScale();
+}
+
+void PlotWidget::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(ui->graphicsView);
+    painter.drawLine(QLineF(_minX, 0, _maxX, 0));
+    painter.drawLine(QLineF(0, _minY, 0, _maxY));
+}
+
+void PlotWidget::updateSceneRect()
+{
+    double rectWidth = _maxX - _minX;
+    double rectHeight = _maxY - _minY;
+    double sceneX = _minX - PlotWidget::WINDOW_GAP * rectWidth;
+    double sceneY = _minY - PlotWidget::WINDOW_GAP * rectHeight;
+    double sceneWidth = (1 + PlotWidget::WINDOW_GAP) * rectWidth;
+    double sceneHeight = (1 + PlotWidget::WINDOW_GAP) * rectHeight;
+
+    ui->graphicsView->scene()->setSceneRect(sceneX, sceneY, sceneWidth, sceneHeight);
 }
 
 void PlotWidget::resizeEvent(QResizeEvent * event)
@@ -68,26 +88,5 @@ void PlotWidget::updateSceneScale()
 {
     QGraphicsScene * scene = ui->graphicsView->scene();
     ui->graphicsView->fitInView(scene->sceneRect());
-}
-
-double PlotWidget::normalizeXValue(double value)
-{
-    if(_initialWidth > 0) {
-        double valuePerUnit = (_maxX - _minX) / _initialWidth;
-        value *= valuePerUnit;
-        value += _initialWidth >> 1; // move coord to center of the plot
-    }
-
-    return value;
-}
-
-double PlotWidget::normalizeYValue(double value)
-{
-    if(_initialHeight > 0) {
-        double valuePerUnit = (_maxY - _minY) / _initialHeight;
-        value *= -valuePerUnit; // make OY coord "Cortesian"-like
-        value += _initialHeight >> 1; // move coord to center of the plot
-    }
-
-    return value;
+    scene->update();
 }

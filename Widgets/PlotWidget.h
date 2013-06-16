@@ -19,10 +19,10 @@ public:
 
     void addPoint(double x, double y);
 
-    inline void setMinX(double x) { this->_minX = x; }
-    inline void setMaxX(double x) { this->_maxX = x; }
-    inline void setMinY(double y) { this->_minY = y; }
-    inline void setMaxY(double y) { this->_maxY = y; }
+    inline void setMinX(double x) { this->_minX = x; updateSceneRect(); }
+    inline void setMaxX(double x) { this->_maxX = x; updateSceneRect(); }
+    inline void setMinY(double y) { this->_minY = y; updateSceneRect(); }
+    inline void setMaxY(double y) { this->_maxY = y; updateSceneRect(); }
 
     /**
      * @brief Reset plot and draw its' axis
@@ -31,6 +31,7 @@ public:
 
 protected:
     void resizeEvent (QResizeEvent * event);
+    void paintEvent(QPaintEvent *event);
 
 private:
     double _minX;
@@ -38,8 +39,7 @@ private:
     double _minY;
     double _maxY;
 
-    int _initialWidth;
-    int _initialHeight;
+    static const double WINDOW_GAP = 0.05;
 
     PlotItem * _plotItem;
 
@@ -52,18 +52,9 @@ private:
     void updateSceneScale();
 
     /**
-     * @brief Normalize value for OX axis
-     * (Adjust it according current min, max and center values)
-     * @param value
+     * @brief Dynamic update of scene size
      */
-    double normalizeXValue(double value);
-
-    /**
-     * @brief Normalize value for OY axis
-     * (Adjust it according current min, max and center values)
-     * @param value
-     */
-    double normalizeYValue(double value);
+    void updateSceneRect();
 };
 
 #endif // PLOTWIDGET_H

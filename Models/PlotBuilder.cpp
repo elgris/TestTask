@@ -1,36 +1,41 @@
 #include "PlotBuilder.h"
 #include "Function.h"
 #include "../Widgets/PlotWidget.h"
-#include <QMutex>
-#include <QWaitCondition>
+#include <QThread>
+
 PlotBuilder::PlotBuilder(QObject *parent) :
     QObject(parent),
-    _function(NULL),
-    _valueFrom(0),
-    _valueTo(0),
-    _step(0),
-    _isProcessing(false)
-{}
-void PlotBuilder::msleep(unsigned long msecs)
+    _isProcessing(false),
+    _worker(new PlotBuilderWorker(this))
 {
-    QMutex mutex;
-    mutex.lock();
+    QThread* thread = new QThread;
+    _worker->moveToThread(thread);
 
-    QWaitCondition waitCondition;
-    waitCondition.wait(&mutex, msecs);
+    connect(this, SIGNAL(started()), _worker, SLOT(process()));
+    connect(this, SIGNAL(resumed()), _worker, SLOT(process()));
+    connect(_worker, SIGNAL(processed(double, double, double)), this, SIGNAL(processed(double, double, double)));
 
-    mutex.unlock();
+    thread->start();
 }
+
+PlotBuilder::~PlotBuilder()
+{
+    delete _worker;
+}
+
 void PlotBuilder::start()
 {
-    _valueCurrent = _valueFrom;
-    process();
+    if(!isProcessing()) {
+        _worker->reset();
+        _isProcessing = true;
+
+        emit started();
+    }
 }
 
 void PlotBuilder::stop()
 {
     _isProcessing = false;
-    _valueCurrent = _valueTo + _step;
 
     emit finished();
 }
@@ -38,37 +43,13 @@ void PlotBuilder::stop()
 void PlotBuilder::pause()
 {
     _isProcessing = false;
+
+    emit paused();
 }
 
 void PlotBuilder::resume()
 {
-    process();
-}
-
-void PlotBuilder::process()
-{
     _isProcessing = true;
 
-    for(_valueCurrent;
-        (_valueCurrent <= _valueTo) && _isProcessing;
-        _valueCurrent += _step) {
-        msleep(10);
-
-        double y = _function->calculate(_valueCurrent);
-
-        emit processed(_valueCurrent, y, getProgress());
-    }
-
-    if (_isProcessing) {
-        stop();
-    }
-}
-
-double PlotBuilder::getProgress()
-{
-    if(_valueTo <= _valueFrom) {
-        return 1;
-    }
-
-    return _valueCurrent / (_valueFrom - _valueTo);
+    emit resumed();
 }

@@ -34,6 +34,7 @@ void PlotItem::addPoint(double x, double y)
 
 void PlotItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    painter->setBrush(QBrush(Qt::blue));
     painter->drawPolyline(_points.data(), _points.size());
 }
 

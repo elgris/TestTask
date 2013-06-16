@@ -8,7 +8,12 @@
 #include "Models/Trigonometric.h"
 #include "Models/PlotBuilder.h"
 #include <QSpacerItem>
-#include <QThread>
+
+
+const QString MainWindow::LABEL_PAUSE = "Pause";
+const QString MainWindow::LABEL_START = "Start";
+const QString MainWindow::LABEL_CONTINUE = "Continue";
+const QString MainWindow::LABEL_PROCESSING = "Process (%0%)";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,10 +33,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-
     _plotBuilder->stop();
     delete _plotBuilder;
+    delete ui;
 }
 
 void MainWindow::startClicked()
@@ -54,6 +58,8 @@ void MainWindow::startClicked()
     function->setParameters(params);
     double from = _plotControlWidget->getValueFrom();
     double to = _plotControlWidget->getValueTo();
+    _plotWidget->setMinX(from);
+    _plotWidget->setMaxX(to);
 
     _plotBuilder->setValueFrom(from);
     _plotBuilder->setValueTo(to);
@@ -61,42 +67,49 @@ void MainWindow::startClicked()
     _plotBuilder->setFunction(function);
     _plotWidget->resetPlot();
 
+    _plotControlWidget->setEnabled(false);
+    ui->startButton->setEnabled(true);
     emit startProcessing();
 }
 
 void MainWindow::setupPlotBuilder()
 {
-    QThread* thread = new QThread;
-    _plotBuilder->moveToThread(thread);
-
     connect(this, SIGNAL(startProcessing()), _plotBuilder, SLOT(start()));
-    connect(this, SIGNAL(stopProcessing()), _plotBuilder, SLOT(stop()));
+    connect(ui->stopButton, SIGNAL(clicked()), _plotBuilder, SLOT(stop()));
     connect(this, SIGNAL(pauseProcessing()), _plotBuilder, SLOT(pause()));
     connect(this, SIGNAL(resumeProcessing()), _plotBuilder, SLOT(resume()));
 
     connect(_plotBuilder, SIGNAL(finished()), this, SLOT(processingFinished()));
     connect(_plotBuilder, SIGNAL(processed(double, double, double)), this, SLOT(valueProcessed(double, double, double)));
-
-    thread->start();
-}
-
-void MainWindow::stopClicked()
-{
-
 }
 
 void MainWindow::pauseClicked()
 {
+    if(_plotBuilder->isProcessing()) {
+        ui->pauseButton->setText(MainWindow::LABEL_CONTINUE);
 
+        emit pauseProcessing();
+    } else {
+        ui->pauseButton->setText(MainWindow::LABEL_PAUSE);
+
+        emit resumeProcessing();
+    }
 }
 
 void MainWindow::valueProcessed(double x, double y, double progress)
 {
+    ui->startButton->setText(QString(MainWindow::LABEL_PROCESSING).arg((int)(progress * 100)));
     _plotWidget->addPoint(x, y);
 }
 
 void  MainWindow::processingFinished()
 {
+    _plotControlWidget->setEnabled(true);
+
+    ui->startButton->setText(MainWindow::LABEL_START);
+    ui->startButton->setEnabled(true);
+
+    ui->pauseButton->setText(MainWindow::LABEL_PAUSE);
 }
 
 QVector<Function *> * MainWindow::loadFunctions()
