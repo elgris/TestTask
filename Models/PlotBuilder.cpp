@@ -2,6 +2,7 @@
 #include "Function.h"
 #include "../Widgets/PlotWidget.h"
 #include <QThread>
+#include <stdexcept>
 
 PlotBuilder::PlotBuilder(QObject *parent) :
     QObject(parent),
@@ -14,6 +15,7 @@ PlotBuilder::PlotBuilder(QObject *parent) :
     connect(this, SIGNAL(started()), _worker, SLOT(process()));
     connect(this, SIGNAL(resumed()), _worker, SLOT(process()));
     connect(_worker, SIGNAL(processed(double, double, double)), this, SIGNAL(processed(double, double, double)));
+    connect(_worker, SIGNAL(finished()), this, SLOT(stop()));
 
     thread->start();
 }
@@ -21,6 +23,34 @@ PlotBuilder::PlotBuilder(QObject *parent) :
 PlotBuilder::~PlotBuilder()
 {
     delete _worker;
+}
+
+void PlotBuilder::setRange(double valueFrom, double valueTo)
+{
+    if(valueFrom > valueTo) {
+        throw new std::runtime_error("End value must be greater than start value");
+    }
+
+    this->_worker->setValueFrom(valueFrom);
+    this->_worker->setValueTo(valueTo);
+}
+
+void PlotBuilder::setStep(double step)
+{
+    if(step <= 0) {
+        throw new std::runtime_error("Step value must be greater than zero");
+    }
+
+    _worker->setStep(step);
+}
+
+void PlotBuilder::setFunction(Function *function)
+{
+    if(function == NULL) {
+        throw new std::runtime_error("NULL function given");
+    }
+
+    _worker->setFunction(function);
 }
 
 void PlotBuilder::start()

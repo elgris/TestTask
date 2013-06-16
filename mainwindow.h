@@ -11,6 +11,7 @@ class PlotControlWidget;
 class PlotWidget;
 class Function;
 class PlotBuilder;
+class PointsCollection;
 
 class MainWindow : public QMainWindow
 {
@@ -27,16 +28,31 @@ signals:
     void stopProcessing();
 
 public slots:
+    /**
+     * @brief Processes click() signal of the button
+     * Starts calculation process
+     */
     void startClicked();
+    /**
+     * @brief Pauses or resumes calculation
+     */
     void pauseClicked();
+    /**
+     * @brief Receives calculated value and current progress
+     */
     void valueProcessed(double, double, double);
+    /**
+     * @brief Stops calculation
+     */
     void processingFinished();
 
 private:
     Ui::MainWindow *ui;
-    PlotControlWidget *_plotControlWidget;
-    PlotWidget * _plotWidget;
-    PlotBuilder *_plotBuilder;
+
+    PlotControlWidget *_plotControlWidget;  // widget with plot control inputs
+    PlotWidget * _plotWidget;   // widget draws the plot itself
+    PlotBuilder *_plotBuilder;  // service that calculates function in separate thread
+    PointsCollection *_points;  // collection of points that were calculated
 
     static const QString LABEL_PAUSE;
     static const QString LABEL_START;
@@ -44,9 +60,9 @@ private:
     static const QString LABEL_PROCESSING;
 
     /**
-     * @brief Sets up Plot builder and all signal-slot connections
+     * @brief Sets up connections between components
      */
-    void setupPlotBuilder();
+    void setupConnections();
 
     /**
      * @brief Loads available functions

@@ -1,92 +1,37 @@
 #include "PlotWidget.h"
 #include "ui_PlotWidget.h"
-#include "ViewItems/PlotItem.h"
+#include "../Models/PointsCollection.h"
 #include <QPainter>
+#include <QDragEnterEvent>
 
-PlotWidget::PlotWidget(QWidget *parent) :
+PlotWidget::PlotWidget(QWidget *parent, PointsCollection *points) :
     QWidget(parent),
-    ui(new Ui::PlotWidget)
+    ui(new Ui::PlotWidget),
+    _points(points)
 {
     ui->setupUi(this);
-    QGraphicsScene *scene = new QGraphicsScene(this);
 
-    ui->graphicsView->setScene(scene);
-
-    resetPlot();
+    // redraw the plot on points collection change
+    connect(points, SIGNAL(collectionChanged()), this, SLOT(update()));
 }
+
+PlotWidget::PlotWidget(PointsCollection *points) :
+    PlotWidget(NULL, points)
+{ }
 
 PlotWidget::~PlotWidget()
 {
     delete ui;
 }
 
-void PlotWidget::addPoint(double x, double y)
-{
-    y = -y;
-    if(_maxY < y) {
-        _maxY = y;
-    }
-    if(_minY > y) {
-        _minY = y;
-    }
-
-    _plotItem->addPoint(x, y);
-    updateSceneRect();
-    updateSceneScale();
-
-}
-
-void PlotWidget::resetPlot()
-{
-    QGraphicsScene * scene = ui->graphicsView->scene();
-    scene->clear();
-
-    _minY = 0;
-    _maxY = 0;
-
-    updateSceneRect();
-
-
-//    int axisXVerticalPos = _maxY / 2;
-//    scene->addLine(QLineF(_minX, 0, _maxX, 0));
-
-//    int axisYHorizontalPos = _maxX / 2;
-//    scene->addLine(QLineF(0, 0, 0, _maxY));
-
-    _plotItem = new PlotItem();
-    scene->addItem(_plotItem);
-    updateSceneScale();
-}
-
 void PlotWidget::paintEvent(QPaintEvent *event)
 {
-    QPainter painter(ui->graphicsView);
-    painter.drawLine(QLineF(_minX, 0, _maxX, 0));
-    painter.drawLine(QLineF(0, _minY, 0, _maxY));
-}
+    QPainter painter(this);
 
-void PlotWidget::updateSceneRect()
-{
-    double rectWidth = _maxX - _minX;
-    double rectHeight = _maxY - _minY;
-    double sceneX = _minX - PlotWidget::WINDOW_GAP * rectWidth;
-    double sceneY = _minY - PlotWidget::WINDOW_GAP * rectHeight;
-    double sceneWidth = (1 + PlotWidget::WINDOW_GAP) * rectWidth;
-    double sceneHeight = (1 + PlotWidget::WINDOW_GAP) * rectHeight;
+    // move center of coordinate system to desired point
+    painter.translate(this->width() >> 1, this->height() >> 1);
+    // direct OY axis up
+    painter.scale(1, -1);
 
-    ui->graphicsView->scene()->setSceneRect(sceneX, sceneY, sceneWidth, sceneHeight);
-}
-
-void PlotWidget::resizeEvent(QResizeEvent * event)
-{
-    updateSceneScale();
-
-    QWidget::resizeEvent(event);
-}
-
-void PlotWidget::updateSceneScale()
-{
-    QGraphicsScene * scene = ui->graphicsView->scene();
-    ui->graphicsView->fitInView(scene->sceneRect());
-    scene->update();
+    painter.drawPolyline(_points->getPoints().data(), _points->getPoints().size());
 }

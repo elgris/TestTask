@@ -2,6 +2,7 @@
 #include "ui_plotcontrolwidget.h"
 
 #include "PlotParametersWidget.h"
+#include <stdexcept>
 
 PlotControlWidget::PlotControlWidget(QWidget *parent) :
     QWidget(parent),
@@ -49,11 +50,17 @@ Function * PlotControlWidget::getSelectedFunction()
 {
     int selectedFuncIndex = ui->comboBox->currentIndex();
 
-    if(selectedFuncIndex >= _functions->size() || selectedFuncIndex < 0) {
-        return NULL;
+    Function * function = NULL;
+
+    if(selectedFuncIndex < _functions->size() && selectedFuncIndex > 0) {
+        function = _functions->at(selectedFuncIndex);
     }
 
-    return _functions->at(selectedFuncIndex);
+    if(function == NULL) {
+        throw new std::runtime_error("Function is not defined");
+    }
+
+    return function;
 }
 
 double PlotControlWidget::getValueFrom() const

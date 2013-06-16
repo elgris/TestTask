@@ -17,7 +17,7 @@ void PlotBuilderWorker::process()
         for(_valueCurrent;
             (_valueCurrent <= _valueTo) && _manager->isProcessing();
             _valueCurrent += _step) {
-            msleep(10);
+//            msleep(5);
 
             double y = _function->calculate(_valueCurrent);
 

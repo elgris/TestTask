@@ -16,6 +16,10 @@ public:
     explicit PlotParametersWidget(int parametersNumber, QWidget *parent = 0);
     ~PlotParametersWidget();
 
+    /**
+     * @brief Returns currenlty set parameters
+     * @return
+     */
     QVector<double> getPlotParameters();
     
 private:

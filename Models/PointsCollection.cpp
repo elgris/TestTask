@@ -1,0 +1,25 @@
+#include "PointsCollection.h"
+
+PointsCollection::PointsCollection(QObject *parent) :
+    QObject(parent)
+{
+}
+
+
+void PointsCollection::addPoint(double x, double y)
+{
+    addPoint(QPointF(x, y));
+
+}
+
+void PointsCollection::addPoint(const QPointF & point)
+{
+    _points.append(point);
+
+    emit collectionChanged();
+}
+
+void PointsCollection::clear()
+{
+    _points.clear();
+}

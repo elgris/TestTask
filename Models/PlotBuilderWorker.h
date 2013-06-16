@@ -1,6 +1,10 @@
 #ifndef PLOTBUILDERWORKER_H
 #define PLOTBUILDERWORKER_H
 #include <QObject>
+namespace Models {
+    class PlotBuilderWorker;
+}
+
 class PlotBuilder;
 class Function;
 
@@ -12,12 +16,31 @@ class PlotBuilderWorker : public QObject
     Q_OBJECT
 public:
     PlotBuilderWorker(PlotBuilder * manager);
-
+    /**
+     * @brief Set start value for calculation
+     * @param valueFrom
+     */
     void setValueFrom(double valueFrom) { _valueFrom = valueFrom; }
+    /**
+     * @brief Set end value for calculation
+     * @param valueTo
+     */
     void setValueTo(double valueTo) { _valueTo = valueTo; }
+    /**
+     * @brief Set step of calculation
+     * @param step
+     */
     void setStep(double step) { _step = step; }
+
+    /**
+     * @brief Reset current calculation process
+     */
     void reset() { _valueCurrent = _valueFrom; }
 
+    /**
+     * @brief Set function for calculations
+     * @param function
+     */
     void setFunction(Function *function) { _function = function; }
 
 signals:

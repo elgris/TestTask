@@ -18,6 +18,9 @@ void Function::setParameter(int parameterNumber, double value)
 
 void Function::setParameters(const QVector<double> & parameters)
 {
+    if(_parameters.size() != parameters.size()) {
+        throw new std::runtime_error("Unsupported number of function prameters provided");
+    }
     for(int i = 0; i < _parameters.size(); ++i) {
         setParameter(i, parameters[i]);
     }

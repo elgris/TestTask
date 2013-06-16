@@ -4,6 +4,10 @@
 #include <QObject>
 #include "PlotBuilderWorker.h"
 
+namespace Models {
+    class PlotBuilder;
+}
+
 class Function;
 class PlotWidget;
 
@@ -18,11 +22,31 @@ public:
     explicit PlotBuilder(QObject *parent = 0);
     ~PlotBuilder();
     
-    void setValueFrom(double valueFrom) { _worker->setValueFrom(valueFrom); }
-    void setValueTo(double valueTo) { _worker->setValueTo((valueTo)); }
-    void setStep(double step) { _worker->setStep(step); }
+    /**
+     * @brief Set start ans end value for calculations
+     * @param valueFrom
+     * @param valueTo
+     * @throws std::runtime_error
+     */
+    void setRange(double valueFrom, double valueTo);
 
-    void setFunction(Function *function) { _worker->setFunction(function); }
+    /**
+     * @brief Set step of calculation
+     * @param step
+     * @throws std::runtime_error
+     */
+    void setStep(double step);
+
+    /**
+     * @brief Set function for calculations
+     * @param function
+     * @throws std::runtime_error
+     */
+    void setFunction(Function *function);
+    /**
+     * @brief Determine whether calculation process still in progress
+     * @return
+     */
     bool isProcessing() { return _isProcessing; }
 
 signals:
