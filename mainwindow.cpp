@@ -8,9 +8,10 @@
 #include "Models/Trigonometric.h"
 #include "Models/PlotBuilder.h"
 #include "Models/PointsCollection.h"
+#include "Models/DataStorage.h"
 #include <QSpacerItem>
 #include <QMessageBox>
-#include <stdexcept>
+#include <QFileDialog>
 
 const QString MainWindow::LABEL_PAUSE = "Pause";
 const QString MainWindow::LABEL_START = "Start";
@@ -44,6 +45,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupConnections()
 {
+    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveClicked()));
+
     connect(this, SIGNAL(startProcessing()), _plotBuilder, SLOT(start()));
     connect(ui->stopButton, SIGNAL(clicked()), _plotBuilder, SLOT(stop()));
     connect(this, SIGNAL(pauseProcessing()), _plotBuilder, SLOT(pause()));
@@ -124,10 +127,25 @@ void  MainWindow::processingFinished()
     ui->pauseButton->setText(MainWindow::LABEL_PAUSE);
 }
 
-//void  MainWindow::saveResults()
-//{
+void  MainWindow::saveClicked()
+{
+    DataStorage storage;
+    QString filename = QFileDialog::getSaveFileName(this,
+                                 tr("Open File..."),
+                                 QString(), tr("Plot files (*.plot);;All Files (*)"));
+    storage.setFunctionIndex(_plotControlWidget->getSelectedFunctionIndex());
+    storage.setFunctionParams(_plotControlWidget->getFunctionParameters());
+    storage.setValueFrom(_plotControlWidget->getValueFrom());
+    storage.setValueTo(_plotControlWidget->getValueTo());
+    storage.setStep(_plotControlWidget->getValueStep());
 
-//}
+    storage.setPoints(_points->getPoints());
+
+    if(!storage.save(filename)) {
+        QMessageBox::warning(this, "Warning!", "Could not save file with results!");
+    }
+
+}
 
 //void  MainWindow::loadResults()
 //{

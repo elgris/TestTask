@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     Widgets/PlotWidget.cpp \
     Models/PlotBuilder.cpp \
     Models/PlotBuilderWorker.cpp \
-    Models/PointsCollection.cpp
+    Models/PointsCollection.cpp \
+    Models/DataStorage.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     Widgets/PlotWidget.h \
     Models/PlotBuilder.h \
     Models/PlotBuilderWorker.h \
-    Models/PointsCollection.h
+    Models/PointsCollection.h \
+    Models/DataStorage.h
 
 FORMS    += mainwindow.ui \
     Widgets/PlotParametersWidget.ui \

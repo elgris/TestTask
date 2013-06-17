@@ -17,7 +17,18 @@ class PointsCollection : public QObject
 public:
     explicit PointsCollection(QObject *parent = 0);
 
+    /**
+     * @brief Get points stored in collection
+     * @return
+     */
     const QVector<QPointF> & getPoints() const { return _points; }
+
+    /**
+     * @brief Set bunch of points to collection.
+     * collectionChanged() will be fired only once
+     * @param points
+     */
+    void setPoints(QVector<QPointF> & points);
     
 signals:
     void collectionChanged();

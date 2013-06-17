@@ -37,6 +37,12 @@ public:
     Function * getSelectedFunction();
 
     /**
+     * @brief Gets index of selected function (-1 if nothing selected)
+     * @return
+     */
+    int getSelectedFunctionIndex();
+
+    /**
      * @brief Gets start value for plot drawing
      * @return
      */

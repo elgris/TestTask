@@ -48,7 +48,7 @@ QVector<double> PlotControlWidget::getFunctionParameters()
 
 Function * PlotControlWidget::getSelectedFunction()
 {
-    int selectedFuncIndex = ui->comboBox->currentIndex();
+    int selectedFuncIndex = getSelectedFunctionIndex();
 
     Function * function = NULL;
 
@@ -57,6 +57,11 @@ Function * PlotControlWidget::getSelectedFunction()
     }
 
     return function;
+}
+
+int PlotControlWidget::getSelectedFunctionIndex()
+{
+    return ui->comboBox->currentIndex();
 }
 
 double PlotControlWidget::getValueFrom() const

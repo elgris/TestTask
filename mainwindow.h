@@ -45,7 +45,10 @@ public slots:
      * @brief Stops calculation
      */
     void processingFinished();
-
+    /**
+     * @brief Save current calculation results
+     */
+    void saveClicked();
 private:
     Ui::MainWindow *ui;
 
