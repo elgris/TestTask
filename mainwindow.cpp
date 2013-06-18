@@ -32,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->verticalLayout->addSpacerItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
     ui->horizontalLayout->addWidget(_plotWidget);
 
+    ui->actionSave->setShortcut(QKeySequence(tr("Ctrl+S")));
+    ui->actionLoad->setShortcut(QKeySequence(tr("Ctrl+O")));
+
     setupConnections();
 }
 
@@ -46,6 +49,8 @@ MainWindow::~MainWindow()
 void MainWindow::setupConnections()
 {
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveClicked()));
+    connect(ui->actionLoad, SIGNAL(triggered()), this, SLOT(loadClicked()));
+    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
 
     connect(this, SIGNAL(startProcessing()), _plotBuilder, SLOT(start()));
     connect(ui->stopButton, SIGNAL(clicked()), _plotBuilder, SLOT(stop()));
@@ -78,7 +83,6 @@ void MainWindow::startClicked()
         QMessageBox::warning(this, "Warning!", "Step value must be greater than zero");
         return;
     }
-
 
     double from = _plotControlWidget->getValueFrom();
     double to = _plotControlWidget->getValueTo();
@@ -131,8 +135,9 @@ void  MainWindow::saveClicked()
 {
     DataStorage storage;
     QString filename = QFileDialog::getSaveFileName(this,
-                                 tr("Open File..."),
+                                 tr("Save File..."),
                                  QString(), tr("Plot files (*.plot);;All Files (*)"));
+
     storage.setFunctionIndex(_plotControlWidget->getSelectedFunctionIndex());
     storage.setFunctionParams(_plotControlWidget->getFunctionParameters());
     storage.setValueFrom(_plotControlWidget->getValueFrom());
@@ -144,36 +149,42 @@ void  MainWindow::saveClicked()
     if(!storage.save(filename)) {
         QMessageBox::warning(this, "Warning!", "Could not save file with results!");
     }
-
 }
 
-//void  MainWindow::loadResults()
-//{
-//    int functionIndex;
-//    double from;
-//    double to;
-//    double step;
-//    double current;
-//    QVector<double> functionParameters;
-//    QVector<QPointF> points;
+void MainWindow::loadClicked()
+{
+    DataStorage storage;
+    QString filename = QFileDialog::getOpenFileName(this,
+                                 tr("Open File..."),
+                                 QString(), tr("Plot files (*.plot);;All Files (*)"));
+    if(!storage.load(filename)) {
+        QMessageBox::warning(this, "Warning!", "Could not load file with results!");
+        return;
+    }
 
-//    // read function index
-//    // read array of parameters
-//    // read points
+    if(!_plotControlWidget->setFunctionIndex(storage.getFunctionIndex())) {
+        QMessageBox::warning(this, "Warning!", "Invalid function index was loaded!");
+        return;
+    }
+    _plotControlWidget->setFunctionParameters(storage.getFunctionParams());
 
-//    try {
-//        _plotControlWidget->setFunctionIndex(functionIndex);
-//        _plotControlWidget->setFunctionParameters(functionParameters);
-//        _plotBuilder->setFunction(_plotControlWidget->getSelectedFunction());
+    if(storage.getValueFrom() > storage.getValueTo()) {
+        QMessageBox::warning(this, "Warning!", "Invalid function values range was loaded! Begin value must be less or equal than end value");
+        return;
+    }
+    _plotBuilder->setRange(storage.getValueFrom(), storage.getValueTo());
+    _plotControlWidget->setValueFrom(storage.getValueFrom());
+    _plotControlWidget->setValueTo(storage.getValueTo());
 
-//        double progress = _plotBuilder->getProgress();
-//        ui->startButton->setText(QString("%0 %1")
-//                                 .arg(MainWindow::LABEL_START,
-//                                     QString(MainWindow::LABEL_PROCESSING).arg((int)(progress * 100)));
-//    } catch(std::exception e) {
-//        QMessageBox::warning(this, "Could not load calculation data!", e.what());
-//    }
-//}
+    if(storage.getStep() <= 0) {
+        QMessageBox::warning(this, "Warning!", "Invalid calculation step was loaded. It must be greater than zero");
+        return;
+    }
+    _plotBuilder->setStep(storage.getStep());
+    _plotControlWidget->setValueStep(storage.getStep());
+
+    _points->setPoints(storage.getPoints());
+}
 
 QVector<Function *> * MainWindow::loadFunctions()
 {

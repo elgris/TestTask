@@ -40,7 +40,21 @@ public:
      * @brief Gets index of selected function (-1 if nothing selected)
      * @return
      */
-    int getSelectedFunctionIndex();
+    int getSelectedFunctionIndex() const;
+
+    /**
+     * @brief Try to set function index
+     * @param index
+     * @return false when function index is invalid
+     */
+    bool setFunctionIndex(int index);
+
+
+    /**
+     * @brief Set function's parameters into widget inputs
+     * @param parameters
+     */
+    void setFunctionParameters(const QVector<double> & parameters);
 
     /**
      * @brief Gets start value for plot drawing
@@ -57,6 +71,21 @@ public:
      * @return
      */
     double getValueStep() const;
+    /**
+     * @brief Sets start value for plot drawing
+     * @param
+     */
+    void setValueFrom(double value);
+    /**
+     * @brief Sets end value for plot drawing
+     * @param
+     */
+    void setValueTo(double value);
+    /**
+     * @brief Sets step to change value for plot drawing
+     * @param
+     */
+    void setValueStep(double value);
 
 public slots:
     void functionSelectionChanged(int index);

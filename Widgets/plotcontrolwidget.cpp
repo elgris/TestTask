@@ -59,9 +59,26 @@ Function * PlotControlWidget::getSelectedFunction()
     return function;
 }
 
-int PlotControlWidget::getSelectedFunctionIndex()
+int PlotControlWidget::getSelectedFunctionIndex() const
 {
     return ui->comboBox->currentIndex();
+}
+
+bool PlotControlWidget::setFunctionIndex(int index)
+{
+    if (index < 0 || index >= _functions->size()) {
+        return false;
+    }
+
+    ui->comboBox->setCurrentIndex(index);
+    return true;
+}
+
+void PlotControlWidget::setFunctionParameters(const QVector<double> &parameters)
+{
+    if(_currentParametersWidget != NULL) {
+        _currentParametersWidget->setFunctionParameters(parameters);
+    }
 }
 
 double PlotControlWidget::getValueFrom() const
@@ -79,6 +96,20 @@ double PlotControlWidget::getValueStep() const
     return ui->valueStep->value();
 }
 
+void PlotControlWidget::setValueFrom(double value)
+{
+    return ui->valueFrom->setValue(value);
+}
+
+void PlotControlWidget::setValueTo(double value)
+{
+    return ui->valueTo->setValue(value);
+}
+
+void PlotControlWidget::setValueStep(double value)
+{
+    return ui->valueStep->setValue(value);
+}
 void PlotControlWidget::functionSelectionChanged(int index)
 {
     if(_currentParametersWidget != NULL) {

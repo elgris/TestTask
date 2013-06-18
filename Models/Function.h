@@ -27,13 +27,13 @@ public:
      * @brief Gets current function parameters
      * @return
      */
-    const inline QVector<double> & getParameters() { return this->_parameters; }
+    const inline QVector<double> & getParameters() const { return this->_parameters; }
 
     /**
      * @brief Get string representation of the function
      * @return
      */
-    const inline QString getFunctionString() { return this->_functionString; }
+    const inline QString getFunctionString() const { return this->_functionString; }
 
     /**
      * @brief Set function's parameter value

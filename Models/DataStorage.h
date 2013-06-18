@@ -12,19 +12,19 @@ class DataStorage
 public:
     DataStorage();
 
-    void setFunctionIndex(int value) { _functionIndex = value; }
-    void setValueFrom(int value) { _valueFrom = value; }
-    void setValueTo(int value) { _valueTo = value; }
-    void setStep(int value) { _step = value; }
-    void setFunctionParams(const QVector<double> & value) { _functionParams = value; }
-    void setPoints(const QVector<QPointF> & value) { _points = value; }
+    inline void setFunctionIndex(int value) { _functionIndex = value; }
+    inline void setValueFrom(double value) { _valueFrom = value; }
+    inline void setValueTo(double value) { _valueTo = value; }
+    inline void setStep(double value) { _step = value; }
+    inline void setFunctionParams(const QVector<double> & value) { _functionParams = value; }
+    inline void setPoints(const QVector<QPointF> & value) { _points = value; }
 
-    int getFunctionIndex() { return _functionIndex;}
-    int getValueFrom() { return _valueFrom; }
-    int getValueTo() { return _valueTo; }
-    int getStep() { return _step; }
-    QVector<double> & getFunctionParams() { return _functionParams; }
-    QVector<QPointF> & getPoints() { return _points; }
+    inline int getFunctionIndex() const { return _functionIndex;}
+    inline double getValueFrom() const { return _valueFrom; }
+    inline double getValueTo() const { return _valueTo; }
+    inline double getStep() const { return _step; }
+    inline QVector<double> & getFunctionParams() { return _functionParams; }
+    inline QVector<QPointF> & getPoints() { return _points; }
 
     bool save(QString filename) const;
     bool load(QString filename);

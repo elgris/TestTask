@@ -17,10 +17,16 @@ public:
     ~PlotParametersWidget();
 
     /**
-     * @brief Returns currenlty set parameters
+     * @brief Returns current parameters
      * @return
      */
-    QVector<double> getPlotParameters();
+    QVector<double> getPlotParameters() const;
+
+    /**
+     * @brief Set parameter values into inputs
+     * @param parameters
+     */
+    void setFunctionParameters(const QVector<double> & parameters);
     
 private:
     Ui::PlotParametersWidget *ui;

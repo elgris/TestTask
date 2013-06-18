@@ -49,6 +49,10 @@ public slots:
      * @brief Save current calculation results
      */
     void saveClicked();
+    /**
+     * @brief Load current calculation status
+     */
+    void loadClicked();
 private:
     Ui::MainWindow *ui;
 

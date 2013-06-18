@@ -20,7 +20,7 @@ PlotParametersWidget::~PlotParametersWidget()
     delete ui;
 }
 
-QVector<double> PlotParametersWidget::getPlotParameters()
+QVector<double> PlotParametersWidget::getPlotParameters() const
 {
     QVector<double> params;
 
@@ -30,6 +30,16 @@ QVector<double> PlotParametersWidget::getPlotParameters()
     }
 
     return params;
+}
+
+void PlotParametersWidget::setFunctionParameters(const QVector<double> &parameters)
+{
+    for(int i = 0;
+        (i < ui->formLayout->rowCount()) && (i < parameters.size());
+        ++i) {
+        QDoubleSpinBox * input = (QDoubleSpinBox *)(ui->formLayout->itemAt(i, QFormLayout::FieldRole)->widget());
+        input->setValue(parameters.at(i));
+    }
 }
 
 void PlotParametersWidget::setupParameterInputs()

@@ -98,7 +98,10 @@
     <string>Save</string>
    </property>
    <property name="shortcut">
-    <string comment="Ctrl+s"/>
+    <string/>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
    </property>
   </action>
   <action name="actionLoad">
