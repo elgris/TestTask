@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PointsWidget</class>
+ <widget class="QWidget" name="PointsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTableView" name="tableView"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="buttonPreviousPage">
+       <property name="text">
+        <string>Previous page</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonNextPage">
+       <property name="text">
+        <string>Next page</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonPreviousPage</sender>
+   <signal>clicked()</signal>
+   <receiver>PointsWidget</receiver>
+   <slot>previousPageClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>87</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>75</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonNextPage</sender>
+   <signal>clicked()</signal>
+   <receiver>PointsWidget</receiver>
+   <slot>nextPageClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>272</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>307</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>previousPageClicked()</slot>
+  <slot>nextPageClicked()</slot>
+ </slots>
+</ui>
