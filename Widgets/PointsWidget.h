@@ -6,7 +6,12 @@
 namespace Ui {
 class PointsWidget;
 }
+
 class PointsCollection;
+/**
+ * @brief Widget displays table with plot's points
+ * Uses simple pagination
+ */
 class PointsWidget : public QWidget
 {
     Q_OBJECT

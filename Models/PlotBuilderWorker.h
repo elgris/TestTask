@@ -1,9 +1,6 @@
 #ifndef PLOTBUILDERWORKER_H
 #define PLOTBUILDERWORKER_H
 #include <QObject>
-namespace Models {
-    class PlotBuilderWorker;
-}
 
 class PlotBuilder;
 class Function;
@@ -66,7 +63,6 @@ private:
      * Returns value in range [0, 1]
      */
     double getProgress();
-    void msleep(unsigned long msecs);
 };
 
 #endif // PLOTBUILDERWORKER_H

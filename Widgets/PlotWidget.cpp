@@ -20,10 +20,6 @@ PlotWidget::PlotWidget(QWidget *parent, PointsCollection *points) :
     ui->valueYCenter->setValue(this->height() >> 1);
 }
 
-PlotWidget::PlotWidget(PointsCollection *points) :
-    PlotWidget(NULL, points)
-{ }
-
 PlotWidget::~PlotWidget()
 {
     delete ui;

@@ -5,9 +5,7 @@
 #include <QPointF>
 #include <QVector>
 
-namespace Models {
-    class PointsCollection;
-}
+
 /**
  * @brief Collection that aggregates calculated points
  */

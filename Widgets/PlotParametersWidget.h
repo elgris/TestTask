@@ -8,6 +8,11 @@ namespace Ui {
 class PlotParametersWidget;
 }
 
+/**
+ * @brief Widget for setting polt parameters.
+ * Perform dynamic generation of input fields
+ * (dependending on number of function's arguments)
+ */
 class PlotParametersWidget : public QWidget
 {
     Q_OBJECT

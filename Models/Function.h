@@ -4,10 +4,6 @@
 #include <QString>
 #include <QVector>
 
-namespace Models {
-    class Function;
-}
-
 /**
  * @brief Interface defines a Function - entity that is able to calculate
  * itself by some argument
@@ -49,8 +45,8 @@ public:
     void setParameters(const QVector<double> & parameters);
 
 protected:
-    QVector<double> _parameters;
-    QString _functionString;
+    QVector<double> _parameters;    // function's parameters (A, B, C, etc)
+    QString _functionString;    // String representation of the function (for output)
 };
 
 #endif // FUNCTION_H

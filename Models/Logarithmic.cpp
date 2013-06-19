@@ -1,5 +1,5 @@
 #include "Logarithmic.h"
-#include "math.h"
+#include <cmath>
 
 Logarithmic::Logarithmic()
     :Function(2, QString("f(x) = A*log( B*x )"))

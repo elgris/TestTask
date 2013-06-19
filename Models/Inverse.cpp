@@ -1,7 +1,6 @@
 #include "Inverse.h"
-#include "tgmath.h"
-#include "math.h"
 #include <limits>
+#include <cmath>
 
 Inverse::Inverse()
     :Function(2, QString("f(x) = A / ( sin(x*x) * B )"))

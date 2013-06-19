@@ -1,5 +1,5 @@
 #include "Trigonometric.h"
-#include <tgmath.h>
+#include <cmath>
 Trigonometric::Trigonometric()
     :Function(3, QString("f(x) = A * sin(x) + B * cos( C*x )"))
 {

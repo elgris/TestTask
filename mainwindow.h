@@ -59,8 +59,8 @@ private:
 
     PlotControlWidget *_plotControlWidget;  // widget with plot control inputs
     PlotWidget * _plotWidget;   // widget draws the plot itself
-    PlotBuilder *_plotBuilder;  // service that calculates function in separate thread
     PointsCollection *_points;  // collection of points that were calculated
+    PlotBuilder *_plotBuilder;  // service that calculates function in separate thread
     PointsWidget *_pointsWidget; // widget displays table with currently calculated points
 
     static const QString LABEL_PAUSE;

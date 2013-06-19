@@ -1,5 +1,5 @@
 #include "PlotParametersWidget.h"
-#include "ui_plotparameterswidget.h"
+#include "ui_PlotParametersWidget.h"
 #include <QLabel>
 #include <QSpinBox>
 #include <QDoubleSpinBox>

@@ -1,5 +1,5 @@
 #include "PlotControlWidget.h"
-#include "ui_plotcontrolwidget.h"
+#include "ui_PlotControlWidget.h"
 
 #include "PlotParametersWidget.h"
 #include <stdexcept>

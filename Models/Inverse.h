@@ -1,9 +1,7 @@
 #ifndef INVERSE_H
 #define INVERSE_H
 #include "Function.h"
-namespace Models {
-    class Inverse;
-}
+
 /**
  * @brief The Inverse function
  * f(x) = A / ( sin(x*x) * B )

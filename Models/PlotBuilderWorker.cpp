@@ -1,10 +1,7 @@
 #include "PlotBuilderWorker.h"
 #include "Function.h"
 #include "PlotBuilder.h"
-
-
-#include <QMutex>
-#include <QWaitCondition>
+#include <QThread>
 
 PlotBuilderWorker::PlotBuilderWorker(PlotBuilder * manager):
     _manager(manager),
@@ -17,7 +14,7 @@ void PlotBuilderWorker::process()
         for(_valueCurrent;
             (_valueCurrent <= _valueTo) && _manager->isProcessing();
             _valueCurrent += _step) {
-//            msleep(5);
+//            QThread::msleep(10); // emulate slowness :)
 
             double y = _function->calculate(_valueCurrent);
 
@@ -37,15 +34,4 @@ double PlotBuilderWorker::getProgress()
     }
 
     return (_valueCurrent  - _valueFrom) / (_valueTo - _valueFrom);
-}
-
-void PlotBuilderWorker::msleep(unsigned long msecs)
-{
-    QMutex mutex;
-    mutex.lock();
-
-    QWaitCondition waitCondition;
-    waitCondition.wait(&mutex, msecs);
-
-    mutex.unlock();
 }

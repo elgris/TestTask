@@ -4,10 +4,6 @@
 #include <QObject>
 #include "PlotBuilderWorker.h"
 
-namespace Models {
-    class PlotBuilder;
-}
-
 class Function;
 class PlotWidget;
 

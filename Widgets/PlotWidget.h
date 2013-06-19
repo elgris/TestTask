@@ -9,20 +9,26 @@ class PlotWidget;
 
 class PointsCollection;
 
+/**
+ * @brief Widget displays plot
+ * @todo Widget also contains buttons which cannot be here
+ * because painting affects them - plot's lines can appear on buttons
+ */
 class PlotWidget : public QWidget
 {
     Q_OBJECT
     
 public:
     explicit PlotWidget(QWidget *parent, PointsCollection * points);
-    explicit PlotWidget(PointsCollection * points);
     ~PlotWidget();
+
 public slots:
     /**
      * @brief Slot controls clicking on buttonCenterCoordinates
      * Moves position of center of coordinates system to middle point of points collection
      */
     void centerCoordinatesClicked();
+
 protected:
     /**
      * @brief Draw the plot
