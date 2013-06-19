@@ -7,5 +7,9 @@ Logarithmic::Logarithmic()
 }
 
 double Logarithmic::calculate(double x) {
-    return this->_parameters[0] * log(this->_parameters[1] * x);
+    double arg = this->_parameters[1] * x;
+
+    return arg <= 0
+            ? 0
+            : this->_parameters[0] * log(arg);
 }

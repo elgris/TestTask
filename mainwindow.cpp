@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    _pointsWidget = new PointsWidget(this, _points);
+    _pointsWidget = new PointsWidget(NULL, _points);
     _pointsWidget->setVisible(false);
 
     _plotControlWidget = new PlotControlWidget(this, loadFunctions());
@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    _pointsWidget->close();
     _plotBuilder->stop();
     delete _plotBuilder;
     delete _points;
@@ -199,6 +200,7 @@ void MainWindow::loadClicked()
     _plotControlWidget->setValueStep(storage.getStep());
 
     _points->setPoints(storage.getPoints());
+    _pointsWidget->updatePage();
 }
 
 QVector<Function *> * MainWindow::loadFunctions()

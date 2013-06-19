@@ -12,7 +12,7 @@ class PointsWidget : public QWidget
     Q_OBJECT
     
 public:
-    explicit PointsWidget(QWidget *parent, PointsCollection *_points);
+    explicit PointsWidget(QWidget *parent, PointsCollection *points);
     ~PointsWidget();
 public slots:
     void previousPageClicked();
@@ -31,8 +31,8 @@ private:
     Ui::PointsWidget *ui;
     PointsCollection *_points;
 
-    int _pageNumber;    // number of current page
     int _perPage;       // number of entries per page
+    int _pageNumber;    // number of current page
 
     /**
      * @brief Update state (caption and 'enabled' state) of 'Previous Page' button
