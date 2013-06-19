@@ -54,6 +54,10 @@ public slots:
      * @brief Load current calculation status
      */
     void loadClicked();
+
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private:
     Ui::MainWindow *ui;
 

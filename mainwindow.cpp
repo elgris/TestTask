@@ -13,6 +13,7 @@
 #include <QSpacerItem>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QCloseEvent>
 
 const QString MainWindow::LABEL_PAUSE = "Pause";
 const QString MainWindow::LABEL_START = "Start";
@@ -45,11 +46,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    _pointsWidget->close();
     _plotBuilder->stop();
     delete _plotBuilder;
     delete _points;
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    _pointsWidget->close();
+    event->accept();
 }
 
 void MainWindow::setupConnections()
@@ -154,16 +160,18 @@ void  MainWindow::saveClicked()
                                                     tr("Save File..."),
                                                     QString(), tr("Plot files (*.plot);;All Files (*)"));
 
-    storage.setFunctionIndex(_plotControlWidget->getSelectedFunctionIndex());
-    storage.setFunctionParams(_plotControlWidget->getFunctionParameters());
-    storage.setValueFrom(_plotControlWidget->getValueFrom());
-    storage.setValueTo(_plotControlWidget->getValueTo());
-    storage.setStep(_plotControlWidget->getValueStep());
+    if(!filename.isEmpty()) {
+        storage.setFunctionIndex(_plotControlWidget->getSelectedFunctionIndex());
+        storage.setFunctionParams(_plotControlWidget->getFunctionParameters());
+        storage.setValueFrom(_plotControlWidget->getValueFrom());
+        storage.setValueTo(_plotControlWidget->getValueTo());
+        storage.setStep(_plotControlWidget->getValueStep());
 
-    storage.setPoints(_points->getPoints());
+        storage.setPoints(_points->getPoints());
 
-    if(!storage.save(filename)) {
-        QMessageBox::warning(this, "Warning!", "Could not save file with results!");
+        if(!storage.save(filename)) {
+            QMessageBox::warning(this, "Warning!", "Could not save file with results!");
+        }\
     }
 }
 
@@ -173,34 +181,36 @@ void MainWindow::loadClicked()
     QString filename = QFileDialog::getOpenFileName(this,
                                                     tr("Open File..."),
                                                     QString(), tr("Plot files (*.plot);;All Files (*)"));
-    if(!storage.load(filename)) {
-        QMessageBox::warning(this, "Warning!", "Could not load file with results!");
-        return;
-    }
+    if(!filename.isEmpty()) {
+        if(!storage.load(filename)) {
+            QMessageBox::warning(this, "Warning!", "Could not load file with results!");
+            return;
+        }
 
-    if(!_plotControlWidget->setFunctionIndex(storage.getFunctionIndex())) {
-        QMessageBox::warning(this, "Warning!", "Invalid function index was loaded!");
-        return;
-    }
-    _plotControlWidget->setFunctionParameters(storage.getFunctionParams());
+        if(!_plotControlWidget->setFunctionIndex(storage.getFunctionIndex())) {
+            QMessageBox::warning(this, "Warning!", "Invalid function index was loaded!");
+            return;
+        }
+        _plotControlWidget->setFunctionParameters(storage.getFunctionParams());
 
-    if(storage.getValueFrom() > storage.getValueTo()) {
-        QMessageBox::warning(this, "Warning!", "Invalid function values range was loaded! Begin value must be less or equal than end value");
-        return;
-    }
-    _plotBuilder->setRange(storage.getValueFrom(), storage.getValueTo());
-    _plotControlWidget->setValueFrom(storage.getValueFrom());
-    _plotControlWidget->setValueTo(storage.getValueTo());
+        if(storage.getValueFrom() > storage.getValueTo()) {
+            QMessageBox::warning(this, "Warning!", "Invalid function values range was loaded! Begin value must be less or equal than end value");
+            return;
+        }
+        _plotBuilder->setRange(storage.getValueFrom(), storage.getValueTo());
+        _plotControlWidget->setValueFrom(storage.getValueFrom());
+        _plotControlWidget->setValueTo(storage.getValueTo());
 
-    if(storage.getStep() <= 0) {
-        QMessageBox::warning(this, "Warning!", "Invalid calculation step was loaded. It must be greater than zero");
-        return;
-    }
-    _plotBuilder->setStep(storage.getStep());
-    _plotControlWidget->setValueStep(storage.getStep());
+        if(storage.getStep() <= 0) {
+            QMessageBox::warning(this, "Warning!", "Invalid calculation step was loaded. It must be greater than zero");
+            return;
+        }
+        _plotBuilder->setStep(storage.getStep());
+        _plotControlWidget->setValueStep(storage.getStep());
 
-    _points->setPoints(storage.getPoints());
-    _pointsWidget->updatePage();
+        _points->setPoints(storage.getPoints());
+        _pointsWidget->updatePage();
+    }
 }
 
 QVector<Function *> * MainWindow::loadFunctions()
