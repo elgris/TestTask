@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "Widgets/PlotControlWidget.h"
 #include "Widgets/PlotWidget.h"
+#include "Widgets/PointsWidget.h"
 #include "Models/Logarithmic.h"
 #include "Models/Inverse.h"
 #include "Models/Quadratic.h"
@@ -25,6 +26,10 @@ MainWindow::MainWindow(QWidget *parent) :
     _plotBuilder(new PlotBuilder)
 {
     ui->setupUi(this);
+
+    _pointsWidget = new PointsWidget(this, _points);
+    _pointsWidget->setVisible(false);
+
     _plotControlWidget = new PlotControlWidget(this, loadFunctions());
     _plotWidget = new PlotWidget(this, _points);
 
@@ -48,20 +53,30 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupConnections()
 {
+    // connect signals for menu actions
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveClicked()));
     connect(ui->actionLoad, SIGNAL(triggered()), this, SLOT(loadClicked()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(ui->actionShowTable, SIGNAL(triggered()), _pointsWidget, SLOT(show()));
 
+    // connect signals to control calculation process (start, stop, pause, processed, ...)
     connect(this, SIGNAL(startProcessing()), _plotBuilder, SLOT(start()));
     connect(ui->stopButton, SIGNAL(clicked()), _plotBuilder, SLOT(stop()));
     connect(this, SIGNAL(pauseProcessing()), _plotBuilder, SLOT(pause()));
     connect(this, SIGNAL(resumeProcessing()), _plotBuilder, SLOT(resume()));
 
+    // connect signals to intercept and display calculation results
     connect(_plotBuilder, SIGNAL(finished()), this, SLOT(processingFinished()));
     connect(_plotBuilder, SIGNAL(processed(double, double, double)), this, SLOT(valueProcessed(double, double, double)));
 
+    // connect signals to populate or clear points collection
     connect(_plotBuilder, SIGNAL(processed(double, double, double)), _points, SLOT(addPoint(double, double)));
     connect(_plotBuilder, SIGNAL(started()), _points, SLOT(clear()));
+
+    // connect signals to update widget that displays points collection
+    connect(this, SIGNAL(startProcessing()), _pointsWidget, SLOT(updatePage()));
+    connect(this, SIGNAL(pauseProcessing()), _pointsWidget, SLOT(updatePage()));
+    connect(_plotBuilder, SIGNAL(finished()), _pointsWidget, SLOT(updatePage()));
 }
 
 void MainWindow::startClicked()
@@ -135,8 +150,8 @@ void  MainWindow::saveClicked()
 {
     DataStorage storage;
     QString filename = QFileDialog::getSaveFileName(this,
-                                 tr("Save File..."),
-                                 QString(), tr("Plot files (*.plot);;All Files (*)"));
+                                                    tr("Save File..."),
+                                                    QString(), tr("Plot files (*.plot);;All Files (*)"));
 
     storage.setFunctionIndex(_plotControlWidget->getSelectedFunctionIndex());
     storage.setFunctionParams(_plotControlWidget->getFunctionParameters());
@@ -155,8 +170,8 @@ void MainWindow::loadClicked()
 {
     DataStorage storage;
     QString filename = QFileDialog::getOpenFileName(this,
-                                 tr("Open File..."),
-                                 QString(), tr("Plot files (*.plot);;All Files (*)"));
+                                                    tr("Open File..."),
+                                                    QString(), tr("Plot files (*.plot);;All Files (*)"));
     if(!storage.load(filename)) {
         QMessageBox::warning(this, "Warning!", "Could not load file with results!");
         return;
