@@ -1,4 +1,17 @@
-Тестовое задание для программиста.
+Brief in English
+----------------
+
+Task: create application that can draw one plots for of several predefined functions. 
+Every function has 1-3 arguments that are entered by the user. 
+User is allowed to set interval for function calculation as well as step between calculation points.
+The application must draw plot 'realtime', during calcuation of points. That is, user must be allowed to track calculation progress without waiting until it completes.
+
+The application must be written in C++, Qt framework is allowed for this task (v.4.6.0 and higher). 
+Other non-standard 3-rd-party libraries (like libraries for drawing plots) are not allowed. 
+The application must compile under Windows as well as Linux (Ubuntu 10.04 will be used for testing) environments.
+
+Тестовое задание для программиста
+---------------------------------
 
 Необходимо написать программу, которая будет отображать графики
 функций выбранной из списка, определенного на этапе программирования.
